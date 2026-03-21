@@ -91,7 +91,7 @@ const sendTokenResponse = (user, statusCode, res) => {
     .json({
       success: true,
       token,
-      user: {
+      data: {
         id: user._id,
         fullName: user.fullName,
         email: user.email,
