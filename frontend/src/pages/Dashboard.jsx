@@ -1,65 +1,128 @@
-import React from 'react';
-import { useAuth } from '../context/AuthContext';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import api from '../services/api'
 
-const Dashboard = () => {
-  const { user } = useAuth();
+export default function Dashboard() {
+  const navigate = useNavigate()
+  const [stats, setStats] = useState({
+    total: 0,
+    pending: 0,
+    inTransit: 0,
+    delivered: 0
+  })
+  const [recentBookings, setRecentBookings] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  const fetchData = async () => {
+    try {
+      const response = await api.get('/bookings')
+      if (response.data.success) {
+        const bookings = response.data.bookings || response.data.data || []
+        setStats({
+          total: bookings.length,
+          pending: bookings.filter(b => b.status === 'pending').length,
+          inTransit: bookings.filter(b => b.status === 'in_transit').length,
+          delivered: bookings.filter(b => b.status === 'delivered').length
+        })
+        setRecentBookings(bookings.slice(0, 5))
+      }
+    } catch (error) {
+      console.error('Error:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const StatCard = ({ icon, label, value }) => (
+    <div className="stat-card glass p-6 flex items-center gap-4 transition-transform hover:scale-105" style={{ background: 'rgba(30, 41, 59, 0.4)', borderRadius: '1rem', border: '1px solid rgba(148, 163, 184, 0.1)' }}>
+      <div className="stat-icon text-3xl">{icon}</div>
+      <div className="stat-content">
+        <div className="stat-value text-2xl font-bold">{value}</div>
+        <div className="stat-label text-sm text-text-tertiary">{label}</div>
+      </div>
+    </div>
+  )
 
   return (
-    <div className="space-y-10 py-4">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 animate-fade-in">
-        <div>
-            <h1 className="text-4xl font-bold tracking-tight">Welcome back, <span className="text-primary">{user?.fullName.split(' ')[0]}</span></h1>
-            <p className="text-text-dim mt-2 font-medium">Your courier operations are running smoothly today.</p>
-        </div>
-        <div className="px-6 py-3 bg-white/5 rounded-2xl border border-white/10 text-sm font-semibold text-text-dim backdrop-blur-md">
-           📅 {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+    <div className="dashboard-page fade-in space-y-8">
+      <div className="page-header mb-8">
+        <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
+        <p className="text-text-secondary">Welcome to your courier management system</p>
+      </div>
+
+      {/* Stats Grid */}
+      <div className="stats-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatCard icon="📦" label="Total Bookings" value={stats.total} />
+        <StatCard icon="⏳" label="Pending" value={stats.pending} />
+        <StatCard icon="🚚" label="In Transit" value={stats.inTransit} />
+        <StatCard icon="✅" label="Delivered" value={stats.delivered} />
+      </div>
+
+      {/* Quick Actions */}
+      <div className="section mt-10">
+        <h2 className="text-xl font-semibold mb-6">Quick Actions</h2>
+        <div className="actions-grid grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <button className="action-btn glass p-6 flex flex-col items-center gap-2 hover:bg-accent-primary/20 transition-colors" onClick={() => navigate('/book')}>
+            <span className="text-2xl">📝</span> Create Booking
+          </button>
+          <button className="action-btn glass p-6 flex flex-col items-center gap-2 hover:bg-accent-primary/20 transition-colors" onClick={() => navigate('/bookings')}>
+            <span className="text-2xl">📋</span> View Bookings
+          </button>
+          <button className="action-btn glass p-6 flex flex-col items-center gap-2 hover:bg-accent-primary/20 transition-colors" onClick={() => navigate('/track')}>
+            <span className="text-2xl">🗺️</span> Track Shipment
+          </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatusCard title="Active Shipments" value="12" icon="📦" color="var(--primary)" />
-        <StatusCard title="Delivered Safe" value="148" icon="✅" color="var(--success)" />
-        <StatusCard title="Pending Review" value="3" icon="⏳" color="var(--secondary)" />
-        <StatusCard title="Reward Points" value="1,250" icon="💎" color="#a855f7" />
+      {/* Recent Bookings */}
+      <div className="section mt-10">
+        <h2 className="text-xl font-semibold mb-6">Recent Bookings</h2>
+        {recentBookings.length > 0 ? (
+          <div className="bookings-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {recentBookings.map(booking => (
+              <div key={booking._id} className="booking-card glass p-6 border-l-4 border-accent-primary">
+                <div className="booking-header flex justify-between items-start mb-4">
+                  <h4 className="font-bold">{booking.bookingId}</h4>
+                  <span className={`status-badge status-${booking.status}`}>
+                    {booking.status}
+                  </span>
+                </div>
+                <p className="booking-receiver text-sm font-medium mb-1">{booking.receiverName}</p>
+                <p className="booking-address text-xs text-text-tertiary truncate">{booking.receiverAddress}</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="empty-state glass p-10 text-center">
+            <p className="text-text-secondary mb-4">No bookings yet</p>
+            <button className="btn-primary" style={{ background: 'var(--accent-primary)', padding: '0.75rem 2rem', borderRadius: '0.5rem', fontWeight: '600' }} onClick={() => navigate('/book')}>
+              Create Your First Booking
+            </button>
+          </div>
+        )}
       </div>
 
-      <div className="premium-card relative overflow-hidden group">
-        <div className="absolute top-0 right-0 p-8 opacity-5 text-8xl group-hover:scale-110 transition-transform duration-700">🚀</div>
-        <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
-            Quick Actions
-            <div className="h-px flex-1 bg-white/10 ml-4"></div>
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <ActionButton to="/book" icon="📦" label="New Shipment" sub="Send anything, anywhere" color="primary" />
-          <ActionButton to="/track" icon="📍" label="Live Tracking" sub="Real-time GPS updates" color="success" />
-          <ActionButton to="/bookings" icon="📜" label="Order History" sub="Manage your past logs" color="secondary" />
-          <ActionButton to="/profile" icon="⚙️" label="Settings" sub="Account & Privacy" color="dim" />
-        </div>
-      </div>
+      <style jsx>{`
+        .stats-grid { 
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 1.5rem;
+        }
+        .actions-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+          gap: 1.5rem;
+        }
+        .bookings-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 1.5rem;
+        }
+      `}</style>
     </div>
-  );
-};
-
-const StatusCard = ({ title, value, icon, color }) => (
-  <div className="premium-card p-8 group hover:scale-[1.02] transition-all cursor-default">
-    <div className="flex justify-between items-start mb-6">
-      <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-2xl shadow-inner">
-        {icon}
-      </div>
-      <div className="w-2 h-2 rounded-full shadow-[0_0_12px_currentColor]" style={{ backgroundColor: color, color }}></div>
-    </div>
-    <p className="text-text-dim text-[11px] font-bold uppercase tracking-[2px] mb-1 opacity-70">{title}</p>
-    <p className="text-4xl font-extrabold tracking-tight">{value}</p>
-  </div>
-);
-
-const ActionButton = ({ to, icon, label, sub }) => (
-  <Link to={to} className="flex flex-col items-start p-6 rounded-2xl bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.08] hover:border-white/20 transition-all text-left group">
-    <span className="text-3xl mb-4 bg-white/5 w-14 h-14 flex items-center justify-center rounded-2xl group-hover:scale-110 transition-transform shadow-lg">{icon}</span>
-    <span className="font-bold text-lg mb-1">{label}</span>
-    <span className="text-xs text-text-dim font-medium">{sub}</span>
-  </Link>
-);
-
-export default Dashboard;
+  )
+}

@@ -1,62 +1,62 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import { createContext, useState, useEffect, useContext } from 'react'
+import axios from 'axios'
 
-const AuthContext = createContext();
+const AuthContext = createContext()
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [user, setUser] = useState(null)
+  const [token, setToken] = useState(localStorage.getItem('token'))
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      fetchMe();
+      localStorage.setItem('token', token)
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+      fetchMe()
     } else {
-      setLoading(false);
+      localStorage.removeItem('token')
+      delete axios.defaults.headers.common['Authorization']
+      setLoading(false)
     }
-  }, [token]);
+  }, [token])
 
   const fetchMe = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/auth/me`);
-      setUser(res.data.data);
-    } catch (err) {
-      localStorage.removeItem('token');
-      setToken(null);
-      setUser(null);
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+      const response = await axios.get(`${apiUrl}/auth/me`)
+      if (response.data.success) {
+        setUser(response.data.data)
+      }
+    } catch (error) {
+      console.error('Fetch user error:', error)
+      logout()
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
-  const login = async (email, password) => {
-    const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, { email, password });
-    localStorage.setItem('token', res.data.token);
-    setToken(res.data.token);
-    setUser(res.data.data);
-    return res.data;
-  };
-
-  const register = async (userData) => {
-    const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, userData);
-    localStorage.setItem('token', res.data.token);
-    setToken(res.data.token);
-    setUser(res.data.data);
-    return res.data;
-  };
+  const login = (newToken, userData) => {
+    setToken(newToken)
+    setUser(userData)
+  }
 
   const logout = () => {
-    localStorage.removeItem('token');
-    setToken(null);
-    setUser(null);
-  };
+    setToken(null)
+    setUser(null)
+  }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, authenticated: !!user }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      token, 
+      authenticated: !!user, 
+      loading, 
+      login, 
+      logout 
+    }}>
       {children}
     </AuthContext.Provider>
-  );
-};
+  )
+}
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => useContext(AuthContext)

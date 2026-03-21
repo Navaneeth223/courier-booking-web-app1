@@ -1,0 +1,1 @@
+export default function AdminClients() { return <div className='p-10 glass'><h1>Admin Clients - Coming Soon</h1><p>Client database synchronization in progress.</p></div> }

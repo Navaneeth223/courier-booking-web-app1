@@ -1,0 +1,1 @@
+export default function BookingList() { return <div className='p-10 glass'><h1>Booking List - Coming Soon</h1><p>The logistics manifest is being archived.</p></div> }

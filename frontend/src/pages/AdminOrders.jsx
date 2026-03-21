@@ -1,0 +1,1 @@
+export default function AdminOrders() { return <div className='p-10 glass'><h1>Admin Orders - Coming Soon</h1><p>The command center is coming online.</p></div> }
