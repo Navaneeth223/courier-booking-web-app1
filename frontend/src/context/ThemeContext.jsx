@@ -12,7 +12,7 @@ export default function ThemeContext({ children }) {
   })
 
   useEffect(() => {
-    document.body.className = `${theme}-mode`
+    document.body.className = theme + '-mode'
     localStorage.setItem('theme', theme)
   }, [theme])
 

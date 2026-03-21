@@ -4,95 +4,143 @@
   margin: 0 auto;
 }
 
-.tracking-header h1 {
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  color: var(--text-primary);
+.tracking-header {
+  margin-bottom: 2.5rem;
+  text-align: center;
 }
 
-.search-form {
+.tracking-header h1 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.search-box {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  padding: 2rem;
   display: flex;
   gap: 1rem;
-  margin-bottom: 2rem;
+  box-shadow: var(--shadow);
+  margin-bottom: 3rem;
 }
 
-.search-form input {
+.search-box input {
   flex: 1;
-  padding: 0.75rem 1rem;
-  background: var(--bg-secondary);
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  border-radius: 0.5rem;
+  padding: 1rem 1.5rem;
+  background: var(--bg-tertiary);
+  border: 1.5px solid var(--border);
+  border-radius: 1rem;
   color: var(--text-primary);
-  font-size: 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
-.search-form button {
+.btn-search {
+  padding: 1rem 2rem;
   background: var(--accent);
   color: white;
   border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  font-weight: 600;
+  border-radius: 1rem;
+  font-weight: 700;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-search:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.tracking-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 1.5rem;
+  padding: 2.5rem;
+  box-shadow: var(--shadow);
 }
 
 .tracking-info {
-  background: var(--bg-secondary);
-  border-radius: 1rem;
-  padding: 2rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.info-card {
-  margin-bottom: 2rem;
+.tracking-info h2 {
+  font-size: 1.5rem;
+  color: var(--accent);
+  font-weight: 800;
 }
 
-.info-card h2 {
-  margin-bottom: 1rem;
-  color: var(--text-primary);
+.tracking-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  position: relative;
+  padding-left: 3rem;
 }
 
-.info-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-}
-
-.timeline {
-  margin-top: 2rem;
+.tracking-timeline::before {
+  content: '';
+  position: absolute;
+  left: 14px;
+  top: 10px;
+  bottom: 10px;
+  width: 4px;
+  background: var(--bg-tertiary);
+  border-radius: 2px;
 }
 
 .timeline-item {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  opacity: 0.5;
-}
-
-.timeline-item.active,
-.timeline-item.done {
-  opacity: 1;
+  position: relative;
 }
 
 .timeline-dot {
+  position: absolute;
+  left: -2.25rem;
+  top: 0.25rem;
   width: 12px;
   height: 12px;
-  background: var(--accent);
+  background: var(--text-tertiary);
   border-radius: 50%;
-  margin-top: 0.25rem;
+  border: 4px solid var(--bg-secondary);
+  z-index: 2;
+  transition: all 0.3s ease;
 }
 
-.timeline-text {
+.timeline-item.active .timeline-dot {
+  background: var(--accent);
+  transform: scale(1.5);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+.timeline-content h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.timeline-content p {
   color: var(--text-secondary);
+  font-size: 0.95rem;
 }
 
-.badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.85rem;
+.timeline-content span {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  margin-top: 0.25rem;
   font-weight: 600;
 }
 
-.status-pending { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
-.status-approved { background: rgba(16, 185, 129, 0.15); color: #10b981; }
-.status-in_transit { background: rgba(59, 130, 246, 0.15); color: var(--accent); }
-.status-delivered { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+@media (max-width: 640px) {
+  .tracking-page { padding: 1.5rem 1rem; }
+  .search-box { flex-direction: column; padding: 1.5rem; }
+  .tracking-card { padding: 1.5rem; }
+}

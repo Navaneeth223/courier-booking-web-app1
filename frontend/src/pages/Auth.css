@@ -357,3 +357,42 @@
     font-size: 1.1rem;
   }
 }
+
+/* Light Mode Overrides */
+body.light-mode .auth-page {
+  background: #f1f5f9;
+}
+
+body.light-mode .auth-page::before,
+body.light-mode .auth-page::after {
+  opacity: 0.2;
+}
+
+body.light-mode .auth-card {
+  background: white;
+  border-color: #e2e8f0;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .auth-card h2 {
+  color: #1e293b;
+}
+
+body.light-mode .feature {
+  background: white;
+  border-color: #e2e8f0;
+  color: #1e293b;
+}
+
+body.light-mode .feature:hover {
+  background: #f8fafc;
+}
+
+body.light-mode .form-group input {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+body.light-mode .auth-footer {
+  border-top-color: #e2e8f0;
+}
