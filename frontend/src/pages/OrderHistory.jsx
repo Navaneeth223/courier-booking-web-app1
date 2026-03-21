@@ -27,15 +27,18 @@ const OrderHistory = () => {
     : bookings.filter(b => b.status === filter);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold">My Bookings</h1>
-        <div className="flex gap-2">
+    <div className="space-y-8 py-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 animate-fade-in">
+        <div>
+            <h1 className="text-3xl font-bold tracking-tight">Shipment Logs</h1>
+            <p className="text-text-dim mt-1 font-medium">Manage and monitor your global deliveries.</p>
+        </div>
+        <div className="flex gap-2 p-1 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-md overflow-x-auto">
           {['all', 'pending', 'approved', 'in_transit', 'delivered'].map(f => (
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold capitalize transition-all ${filter === f ? 'bg-primary text-white' : 'bg-white text-gray-500 hover:bg-gray-100'}`}
+              className={`px-5 py-2 rounded-xl text-xs font-bold capitalize transition-all whitespace-nowrap ${filter === f ? 'bg-primary text-white shadow-lg' : 'text-text-dim hover:text-white hover:bg-white/5'}`}
             >
               {f.replace('_', ' ')}
             </button>
@@ -43,39 +46,48 @@ const OrderHistory = () => {
         </div>
       </div>
 
-      <div className="premium-card p-0 overflow-hidden">
+      <div className="premium-card p-0 overflow-hidden border-white/10">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-semibold">
+            <thead className="bg-white/5 text-text-dim text-[11px] uppercase font-bold tracking-[1px]">
               <tr>
-                <th className="px-6 py-3">Booking ID</th>
-                <th className="px-6 py-3">Receiver</th>
-                <th className="px-6 py-3">Date</th>
-                <th className="px-6 py-3">Weight</th>
-                <th className="px-6 py-3">Status</th>
-                <th className="px-6 py-3 text-right">Action</th>
+                <th className="px-8 py-5">Global ID</th>
+                <th className="px-8 py-5">Destination</th>
+                <th className="px-8 py-5">Weight</th>
+                <th className="px-8 py-5">Status</th>
+                <th className="px-8 py-5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-white/5">
               {filteredBookings.map(order => (
-                <tr key={order._id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 font-medium text-primary">{order.bookingId}</td>
-                  <td className="px-6 py-4">{order.receiverName}</td>
-                  <td className="px-6 py-4 text-gray-500 text-sm">{new Date(order.createdAt).toLocaleDateString()}</td>
-                  <td className="px-6 py-4">{order.parcelWeight} kg</td>
-                  <td className="px-6 py-4">
-                    <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${getStatusColor(order.status)}`}>
+                <tr key={order._id} className="hover:bg-white/[0.02] transition-colors group">
+                  <td className="px-8 py-6">
+                    <span className="font-bold text-primary">#{order.bookingId}</span>
+                    <p className="text-[10px] text-text-dim mt-1 font-medium">{new Date(order.createdAt).toLocaleDateString()}</p>
+                  </td>
+                  <td className="px-8 py-6">
+                    <p className="font-bold text-white">{order.receiverName}</p>
+                    <p className="text-xs text-text-dim mt-1">{order.receiverAddress}</p>
+                  </td>
+                  <td className="px-8 py-6 font-medium">{order.parcelWeight} kg</td>
+                  <td className="px-8 py-6">
+                    <span className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider ${getStatusColor(order.status)}`}>
                       {order.status.replace('_', ' ')}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-right">
-                    <Link to={`/track?id=${order.bookingId}`} className="text-primary hover:underline font-semibold text-sm">Track</Link>
+                  <td className="px-8 py-6 text-right">
+                    <Link 
+                        to={`/track?id=${order.bookingId}`} 
+                        className="btn-primary py-2 px-6 text-xs shadow-md opacity-0 group-hover:opacity-100 transition-opacity inline-block"
+                    >
+                        Track Live
+                    </Link>
                   </td>
                 </tr>
               ))}
-              {filteredBookings.length === 0 && (
+              {filteredBookings.length === 0 && !loading && (
                 <tr>
-                  <td colSpan="6" className="text-center py-12 text-gray-400">No bookings found for this filter.</td>
+                  <td colSpan="6" className="text-center py-24 text-text-dim font-medium italic opacity-50">No logs matching this frequency.</td>
                 </tr>
               )}
             </tbody>
@@ -88,12 +100,12 @@ const OrderHistory = () => {
 
 const getStatusColor = (status) => {
   switch (status) {
-    case 'pending': return 'bg-warning/10 text-warning';
-    case 'approved': return 'bg-blue/10 text-blue';
-    case 'picked_up': return 'bg-purple/10 text-purple';
-    case 'in_transit': return 'bg-primary/10 text-primary';
-    case 'delivered': return 'bg-success/10 text-success';
-    default: return 'bg-gray-100 text-gray-500';
+    case 'pending': return 'bg-yellow-500/10 text-yellow-500 border border-yellow-500/20';
+    case 'approved': return 'bg-blue-500/10 text-blue-400 border border-blue-500/20';
+    case 'picked_up': return 'bg-purple-500/10 text-purple-400 border border-purple-500/20';
+    case 'in_transit': return 'bg-primary/10 text-primary border border-primary/20';
+    case 'delivered': return 'bg-success/10 text-success border border-success/20';
+    default: return 'bg-white/5 text-text-dim';
   }
 };
 

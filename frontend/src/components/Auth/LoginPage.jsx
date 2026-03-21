@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import Input from '../Common/Input';
-import Button from '../Common/Button';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -30,15 +28,14 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-bg-main">
-      {/* Enhanced Dynamic Background Orbs */}
+    <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
+      {/* Dynamic Background Orbs */}
       <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-primary/20 rounded-full blur-[140px] animate-pulse"></div>
       <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-secondary/10 rounded-full blur-[140px] animate-pulse"></div>
-      <div className="absolute top-[30%] left-[40%] w-[30%] h-[30%] bg-blue-500/10 rounded-full blur-[100px]"></div>
 
       <div className="premium-card w-full max-w-lg relative z-10 animate-fade-in border-white/20 shadow-[0_0_80px_rgba(0,0,0,0.4)]">
         <div className="text-center mb-10">
-          <div className="w-20 h-20 bg-gradient-to-tr from-primary to-secondary rounded-3xl mx-auto flex items-center justify-center text-4xl mb-6 shadow-[0_20px_40px_-10px_var(--primary-glow)] transform hover:rotate-6 transition-transform">📦</div>
+          <div className="w-20 h-20 bg-gradient-to-tr from-primary to-secondary rounded-3xl mx-auto flex items-center justify-center text-4xl mb-6 shadow-lg transform hover:rotate-6 transition-transform">📦</div>
           <h1 className="text-4xl font-extrabold mb-3 tracking-tight">Security Portal</h1>
           <p className="text-text-dim font-medium">Access your enterprise logistics dashboard</p>
         </div>
@@ -105,18 +102,10 @@ const LoginPage = () => {
           
           <button 
             type="submit" 
-            className="btn-primary w-full text-xl mt-6 h-16 shadow-[0_20px_50px_-15px_var(--primary-glow)] hover:scale-[1.02]" 
+            className="btn-primary w-full text-xl mt-6 h-16 shadow-lg hover:scale-[1.01]" 
             disabled={loading}
           >
-            {loading ? (
-                <div className="flex items-center justify-center gap-3">
-                    <svg className="animate-spin h-6 w-6 text-white" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Decrypting Access...
-                </div>
-            ) : 'Establish Connection'}
+            {loading ? 'Establishing Connection...' : 'Establish Connection'}
           </button>
         </form>
 
