@@ -1,62 +1,46 @@
-import { createContext, useState, useEffect, useContext } from 'react'
-import axios from 'axios'
+import { createContext, useContext, useState, useEffect } from 'react'
 
 const AuthContext = createContext()
 
-export const AuthProvider = ({ children }) => {
+export function useAuth() {
+  return useContext(AuthContext)
+}
+
+export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
-  const [token, setToken] = useState(localStorage.getItem('token'))
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (token) {
-      localStorage.setItem('token', token)
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-      fetchMe()
-    } else {
-      localStorage.removeItem('token')
-      delete axios.defaults.headers.common['Authorization']
-      setLoading(false)
+    const token = localStorage.getItem('authToken')
+    const userData = localStorage.getItem('userData')
+    
+    if (token && userData) {
+      setUser(JSON.parse(userData))
+      setIsAuthenticated(true)
     }
-  }, [token])
+    setLoading(false)
+  }, [])
 
-  const fetchMe = async () => {
-    try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
-      const response = await axios.get(`${apiUrl}/auth/me`)
-      if (response.data.success) {
-        setUser(response.data.data)
-      }
-    } catch (error) {
-      console.error('Fetch user error:', error)
-      logout()
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const login = (newToken, userData) => {
-    setToken(newToken)
+  const login = (token, userData) => {
+    localStorage.setItem('authToken', token)
+    localStorage.setItem('userData', JSON.stringify(userData))
     setUser(userData)
+    setIsAuthenticated(true)
+    console.log('✅ Login successful, user:', userData)
+    return true
   }
 
   const logout = () => {
-    setToken(null)
+    localStorage.removeItem('authToken')
+    localStorage.removeItem('userData')
     setUser(null)
+    setIsAuthenticated(false)
   }
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      token, 
-      authenticated: !!user, 
-      loading, 
-      login, 
-      logout 
-    }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   )
 }
-
-export const useAuth = () => useContext(AuthContext)

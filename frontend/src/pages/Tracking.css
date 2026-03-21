@@ -1,0 +1,98 @@
+.tracking-page {
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.tracking-header h1 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: var(--text-primary);
+}
+
+.search-form {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.search-form input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: var(--bg-secondary);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 0.5rem;
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.search-form button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tracking-info {
+  background: var(--bg-secondary);
+  border-radius: 1rem;
+  padding: 2rem;
+}
+
+.info-card {
+  margin-bottom: 2rem;
+}
+
+.info-card h2 {
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.timeline {
+  margin-top: 2rem;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.5;
+}
+
+.timeline-item.active,
+.timeline-item.done {
+  opacity: 1;
+}
+
+.timeline-dot {
+  width: 12px;
+  height: 12px;
+  background: var(--accent);
+  border-radius: 50%;
+  margin-top: 0.25rem;
+}
+
+.timeline-text {
+  color: var(--text-secondary);
+}
+
+.badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status-pending { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+.status-approved { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+.status-in_transit { background: rgba(59, 130, 246, 0.15); color: var(--accent); }
+.status-delivered { background: rgba(34, 197, 94, 0.15); color: #22c55e; }

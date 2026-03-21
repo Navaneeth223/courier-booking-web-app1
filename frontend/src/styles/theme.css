@@ -1,0 +1,35 @@
+:root {
+  --dark-bg-main: #0f172a;
+  --dark-bg-secondary: rgba(15, 23, 42, 0.95);
+  --dark-text-primary: #f1f5f9;
+  --dark-text-secondary: #cbd5e1;
+  --dark-accent: #3b82f6;
+  
+  --light-bg-main: #f8fafc;
+  --light-bg-secondary: #ffffff;
+  --light-text-primary: #0f172a;
+  --light-text-secondary: #475569;
+  --light-accent: #2563eb;
+}
+
+body {
+  background: var(--bg-main);
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+body.dark-mode {
+  --bg-main: var(--dark-bg-main);
+  --bg-secondary: var(--dark-bg-secondary);
+  --text-primary: var(--dark-text-primary);
+  --text-secondary: var(--dark-text-secondary);
+  --accent: var(--dark-accent);
+}
+
+body.light-mode {
+  --bg-main: var(--light-bg-main);
+  --bg-secondary: var(--light-bg-secondary);
+  --text-primary: var(--light-text-primary);
+  --text-secondary: var(--light-text-secondary);
+  --accent: var(--light-accent);
+}

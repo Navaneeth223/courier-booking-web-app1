@@ -1,0 +1,102 @@
+.list-page {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.list-header h1 {
+  font-size: 2rem;
+  color: var(--text-primary);
+}
+
+.btn-new {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-new:hover {
+  transform: scale(1.05);
+}
+
+.bookings-table {
+  background: var(--bg-secondary);
+  border: 1px solid rgba(59, 130, 246, 0.1);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background: var(--bg-main);
+  padding: 1rem;
+  text-align: left;
+  color: var(--text-primary);
+  font-weight: 600;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+}
+
+td {
+  padding: 1rem;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(59, 130, 246, 0.05);
+}
+
+tr:hover {
+  background: var(--bg-main);
+}
+
+.badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status-pending { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+.status-approved { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+.status-in_transit { background: rgba(59, 130, 246, 0.15); color: var(--accent); }
+.status-delivered { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  background: var(--bg-secondary);
+  border-radius: 1rem;
+}
+
+.empty-state p {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.empty-state button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  table { font-size: 0.9rem; }
+  th, td { padding: 0.75rem; }
+}
