@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const sendEmail = require('../services/emailService');
 
 // @desc    Register user
 // @route   POST /api/auth/register
@@ -18,6 +19,19 @@ exports.register = async (req, res, next) => {
       businessLicense,
       address
     });
+
+    // Send welcome email
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: 'Welcome to Courier Booking Service',
+        message: `Hello ${user.fullName},\n\nWelcome to our platform! Your account has been successfully created.`,
+        html: `<h1>Welcome, ${user.fullName}!</h1><p>We're excited to have you on board. You can now start booking your shipments.</p>`
+      });
+    } catch (emailErr) {
+      console.error('Welcome email failed:', emailErr.message);
+      // Don't fail registration if email fails
+    }
 
     sendTokenResponse(user, 200, res);
   } catch (err) {

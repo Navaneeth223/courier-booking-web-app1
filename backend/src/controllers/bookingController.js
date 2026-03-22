@@ -1,6 +1,8 @@
 const Booking = require('../models/Booking');
 const RateConfig = require('../models/RateConfig');
 const { calculateRate, generateBookingId } = require('../utils/rateCalculator');
+const sendEmail = require('../services/emailService');
+const sendSMS = require('../services/smsService');
 
 // @desc    Create new booking
 // @route   POST /api/bookings
@@ -36,6 +38,30 @@ exports.createBooking = async (req, res, next) => {
         }
       ]
     });
+
+    // Send notifications
+    try {
+      // Email to sender
+      await sendEmail({
+        email: senderEmail,
+        subject: `Booking Confirmed - ${booking.bookingId}`,
+        message: `Dear ${senderName},\n\nYour booking with ID ${booking.bookingId} has been created successfully. \n\nTracking ID: ${booking._id}\nParcel: ${parcelDescription}\nWeight: ${parcelWeight}kg\nRate: ₹${calculatedRate}`,
+        html: `<h2>Booking Confirmed!</h2>
+               <p><strong>Booking ID:</strong> ${booking.bookingId}</p>
+               <p><strong>Tracking ID:</strong> ${booking._id}</p>
+               <p><strong>Parcel:</strong> ${parcelDescription}</p>
+               <p><strong>Total Rate:</strong> ₹${calculatedRate}</p>
+               <p>Your shipment is currently pending approval by our team.</p>`
+      });
+
+      // SMS to sender
+      await sendSMS({
+        phone: senderPhone,
+        message: `Booking Confirmed! ID: ${booking.bookingId}. Your shipment is pending approval. Track at: http://localhost:5173/track/${booking._id}`
+      });
+    } catch (notifyErr) {
+      console.error('Booking notification failed:', notifyErr.message);
+    }
 
     res.status(201).json({
       success: true,

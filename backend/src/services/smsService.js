@@ -2,6 +2,11 @@ const twilio = require('twilio');
 
 const sendSMS = async (options) => {
   try {
+    if (!process.env.SMS_ACCOUNT_SID || !process.env.SMS_AUTH_TOKEN) {
+      console.warn('SMS credentials missing. Skipping SMS send.');
+      return null;
+    }
+
     const client = twilio(process.env.SMS_ACCOUNT_SID, process.env.SMS_AUTH_TOKEN);
 
     const message = await client.messages.create({
