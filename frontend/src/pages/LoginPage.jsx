@@ -7,8 +7,8 @@ import api from '../services/api'
 import './Auth.css'
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('admin@courier.app')
-  const [password, setPassword] = useState('admin123')
+  const [email, setEmail] = useState('admin@courier.com')
+  const [password, setPassword] = useState('admin123@password')
   const [loading, setLoading] = useState(false)
   const { login } = useAuth()
   const { theme, toggleTheme } = useTheme()

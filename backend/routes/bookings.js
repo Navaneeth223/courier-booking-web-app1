@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Booking = require('../models/Booking');
+const generateLabel = require('../src/services/labelService');
 
 // Get all bookings
 router.get('/', async (req, res) => {
@@ -62,6 +63,29 @@ router.put('/:id', async (req, res) => {
     res.json({ success: true, booking });
   } catch (error) {
     res.json({ success: false, message: error.message });
+  }
+});
+
+// Get booking label PDF
+router.get('/:id/label', async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) {
+      return res.status(404).json({ success: false, message: 'Booking not found' });
+    }
+
+    const pdfBuffer = await generateLabel(booking);
+    
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename=label-${booking.bookingId}.pdf`,
+      'Content-Length': pdfBuffer.length
+    });
+    
+    res.send(pdfBuffer);
+  } catch (error) {
+    console.error('Label generation error:', error);
+    res.status(500).json({ success: false, message: 'Failed to generate label' });
   }
 });
 

@@ -31,17 +31,17 @@ router.post('/login', async (req, res) => {
     res.json({
       success: true,
       token,
-      data: { // Changed to 'data' to match previous fixes if needed, but the prompt says 'user'
+      data: {
         id: user._id,
         email: user.email,
-        name: user.name,
+        name: user.fullName, // Use fullName from model
         accountType: user.accountType,
         role: user.role
       },
-      user: { // Including both for maximum compatibility
+      user: {
         id: user._id,
         email: user.email,
-        name: user.name,
+        name: user.fullName, // Use fullName from model
         accountType: user.accountType,
         role: user.role
       }

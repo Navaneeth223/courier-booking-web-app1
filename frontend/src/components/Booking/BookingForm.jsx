@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { bookingService } from '../../services/api';
 import Input from '../Common/Input';
 import Button from '../Common/Button';
+import { toast } from 'react-toastify'
 
 const BookingForm = () => {
   const [formData, setFormData] = useState({
@@ -30,11 +31,23 @@ const BookingForm = () => {
     setLoading(true);
     try {
       const res = await bookingService.create(formData);
-      setSuccess(res.data.data.bookingId);
+      setSuccess(res.data.booking._id); // Store the booking database _id for label download
     } catch (err) {
-      alert(err.response?.data?.error || 'Booking failed');
+      alert(err.response?.data?.message || 'Booking failed');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDownloadLabel = async () => {
+    if (!success) return;
+    try {
+      toast.info('Generating label...');
+      await bookingService.downloadLabel(success);
+      toast.success('Label downloaded!');
+    } catch (err) {
+      console.error('Download error:', err);
+      toast.error('Failed to download label');
     }
   };
 
@@ -50,7 +63,7 @@ const BookingForm = () => {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button onClick={() => setSuccess(null)} className="px-8">Create New Shipment</Button>
-            <Button variant="outline" className="px-8 border-white/10 hover:bg-white/5">Download Label</Button>
+            <Button variant="outline" onClick={handleDownloadLabel} className="px-8 border-white/10 hover:bg-white/5">Download Label</Button>
         </div>
       </div>
     );
